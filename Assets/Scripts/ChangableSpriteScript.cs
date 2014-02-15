@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-[ExecuteInEditMode]
 [RequireComponent( typeof( SpriteRenderer ) )]
 public class ChangableSpriteScript : MonoBehaviour {
 
@@ -9,14 +8,11 @@ public class ChangableSpriteScript : MonoBehaviour {
 
     protected new SpriteRenderer renderer;
 
-    // Use this for initialization
-    private void Start() {
+    private void OnEnable() {
         renderer = GetComponent<SpriteRenderer>();
-        if( spriteIndex >= 0 && spriteIndex < sprites.Length )
-            UpdateSprite();
+        UpdateSprite();
     }
 
-    // Update is called once per frame
     public void UpdateSprite() {
         renderer.sprite = sprites[spriteIndex];
     }

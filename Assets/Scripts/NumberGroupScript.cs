@@ -5,22 +5,11 @@ using UnityEngine;
 public class NumberGroupScript : MonoBehaviour {
 
     public int value;
-    public float numberSpacing = 1.0f;
+    public float numberSpacing = 1.2f;
     public ChangableSpriteScript numberPrefab;
 
     void Start() {
         numberPrefab.CreatePool();
-        StartCoroutine( Tester() );
-    }
-
-    protected IEnumerator Tester() {
-        value = 0;
-        while( true ) {
-            yield return new WaitForSeconds( 1 );
-            value++;
-            UpdateValue();
-            if( value > 11 ) value = 7;
-        }
     }
 
     public void UpdateValue() {

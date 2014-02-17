@@ -5,14 +5,13 @@ public class InputScript : MonoBehaviour {
     private string input = "";
     public PlayerScript playerScript;
     public bool clearOnFailedAttack = false;
+    
     #region Unity methods
     private void Start() {}
 
-    private void Update() {
-
-
-    }
+    private void Update() {}
     #endregion
+
     private bool checkInput( out int parsed ) {
         bool canParse = Int32.TryParse( input, out parsed );
         if( !canParse ) {
@@ -23,17 +22,27 @@ public class InputScript : MonoBehaviour {
         return true;
     }
 
-    private void ReactOnInvalidInput() {}
+    private void ReactOnInvalidInput() {
+        if( clearOnFailedAttack ) ClearInput();
+    }
 
-    private void ReactOnValidInput() {}
+    private void ReactOnValidInput() {
+        ClearInput();
+    }
+
+    void ClearInput() {
+        input = "";
+    }
+
     #region GUI
     // TODO: Fix this mess. Input should not keep firing if enter/return is held down. :/
     public Rect inputPosition;
     private bool inputHasFired = false;
     private void OnGUI() {
         GUIStyle centerTextStyle = new GUIStyle( GUI.skin.textField ) {alignment = TextAnchor.MiddleCenter};
+        GUI.SetNextControlName("textField");
         input = GUI.TextField( inputPosition, input, centerTextStyle );
-
+        GUI.FocusControl("textField");
         KeyCode c = Event.current.keyCode;
         //Debug.Log(c);
         if( c == KeyCode.Return || c == KeyCode.KeypadEnter ) {

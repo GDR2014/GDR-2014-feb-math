@@ -62,13 +62,16 @@ public class PlayerScript : MonoBehaviour {
     }
 
     public bool AttemptAttack(int newNum) {
+        // TODO: ¤¤¤¤¤¤¤¤
+        attackNumber = newNum;
+        // TODO: ########
         EnemyScript enemy = null;
         if( leftEnemy != null && leftEnemy.attackTarget == newNum ) enemy = leftEnemy;
         else if( rightEnemy != null && rightEnemy.attackTarget == newNum ) enemy = rightEnemy;
-        //---------
+        // TODO: ¤¤¤¤¤¤¤¤
         string enemyString = enemy == null ? "null" : enemy == rightEnemy ? "right enemy" : enemy == leftEnemy ? "left enemy" : "weird";
         Debug.Log("Attempting attack. Number is " + newNum + ". Target is " + enemyString);
-        //---------
+        // TODO: ########
         if( enemy == null ) {
             Fumble();
             return false;
@@ -97,6 +100,7 @@ public class PlayerScript : MonoBehaviour {
 
     void UpdateNumberRenderer() {
         numberRenderer.value = attackNumber;
+        numberRenderer.UpdateValue();
     }
 
 }

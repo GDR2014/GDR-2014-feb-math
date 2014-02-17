@@ -1,50 +1,53 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using Assets.Scripts.Data;
-using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemySpawnerScript : MonoBehaviour {
-
     #region Fields
     // The float is a relative probablitity for an operator to be chosen
     public Dictionary<float, Operator> PossibleOperators = new Dictionary<float, Operator>();
     public Operator[] __TemporaryPossibleOperators;
 
-    public EnemyDirection Direction;
+    public EnemyScript enemyPrefab;
+    public float EnemySpeed;
     public IntervalBoundsInMillis SpawnInterval;
     #endregion
-
     #region Unity methods
-    void Start() {
-        StartCoroutine( "SpawnCycle" );
-    }
-    
-    void Update () {}
+    private void Start() {}
+    private void Update() {}
     #endregion
-
-    void StopSpawning() {
-        //StopAllCoroutines(); // <-- Should work as well, as long as SpawnCycle is the only coroutine running
-        StopCoroutine("SpawnCycle");
+    public EnemyScript SpawnEnemy() {
+        EnemyScript e = enemyPrefab.Spawn( transform.position );
+        e.Speed = EnemySpeed;
+        e.attackOperator = SelectRandomOperator();
+        e.attackModifier = SelectRandomNumber( e.attackOperator );
+        return e;
     }
 
-    IEnumerator SpawnCycle() {
-        float delay = Random.Range( SpawnInterval.Min, SpawnInterval.Max );
-        yield return new WaitForSeconds( delay / 1000 );
-        StartCoroutine( "SpawnCycle" );
+    int SelectRandomNumber( Operator op ) {
+        // TODO: Write fancy logic for determining numbers based on the player's number and the operator.
+        // E.g. Don't divide 10 with 3, or odd numbers with 2.
+        switch( op ) {
+            case Operator.PLUS:
+            case Operator.MINUS:
+            case Operator.MULTIPLY:
+            case Operator.DIVIDE:
+                return 1;
+        }
+        return 1;
     }
 
+    Operator SelectRandomOperator() {
+        return __TemporaryPossibleOperators[Random.Range( 0, __TemporaryPossibleOperators.Length )];
+    }
 
     #region Editor helpers
-    public enum EnemyDirection {
-        LEFT, RIGHT
-    }
-
-    [System.Serializable]
+    [Serializable]
     public class IntervalBoundsInMillis {
         public float Min = 500;
         public float Max = 2000;
     }
     #endregion
-
 }

@@ -13,6 +13,8 @@ public class EnemySpawnerScript : MonoBehaviour {
     public EnemyScript enemyPrefab;
     public float EnemySpeed;
     public IntervalBoundsInMillis SpawnInterval;
+    public OperatorNumberSetScript.OperatorSide operatorSide = OperatorNumberSetScript.OperatorSide.LEFT;
+
     #endregion
     #region Unity methods
     private void Start() {}
@@ -23,6 +25,8 @@ public class EnemySpawnerScript : MonoBehaviour {
         e.Speed = EnemySpeed;
         e.attackOperator = SelectRandomOperator();
         e.attackModifier = SelectRandomNumber( e.attackOperator );
+
+        e.operatorSide = operatorSide;
         return e;
     }
 

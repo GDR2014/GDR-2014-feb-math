@@ -12,21 +12,26 @@ public class EnemyScript : MonoBehaviour {
     public float Speed;
     public float AttackRange = 1f;
 
-    private OperatorNumberSetScript opNumSet;
+    protected OperatorNumberSetScript opNumSet;
+    public OperatorNumberSetScript.OperatorSide operatorSide = OperatorNumberSetScript.OperatorSide.LEFT;
 
     void Start() {
+        player = GameObject.FindWithTag( "Player" ).GetComponent<PlayerScript>();
         opNumSet = GetComponent<OperatorNumberSetScript>();
+        opNumSet.operatorSide = operatorSide;
         StartCoroutine( UpdateNumberRenderer() );
         StartCoroutine( Move() );
     }
 
     IEnumerator Move() {
-        Vector2 pos = transform.position;
         float playerX = player.transform.position.x;
+        Vector2 pos = transform.position;
         float distance = Mathf.Abs( pos.x - playerX );
-        if( distance <= AttackRange ) yield break; // TODO: Maybe play some sort of attack animation here
-        pos.x += Speed * Time.deltaTime;
-        transform.position = pos;
+        while ( distance > AttackRange ) {
+            pos.x += Speed * Time.deltaTime;
+            transform.position = pos;
+            yield return null;
+        }
     }
 
     public void UpdateAttackTarget( int playerVal ) {

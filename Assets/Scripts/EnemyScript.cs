@@ -2,6 +2,7 @@
 using Assets.Scripts.Data;
 using UnityEngine;
 
+[RequireComponent(typeof(OperatorNumberSetScript))]
 public class EnemyScript : MonoBehaviour {
 
     public PlayerScript player;
@@ -10,6 +11,14 @@ public class EnemyScript : MonoBehaviour {
     public Operator attackOperator;
     public float Speed;
     public float AttackRange = 1f;
+
+    private OperatorNumberSetScript opNumSet;
+
+    void Start() {
+        opNumSet = GetComponent<OperatorNumberSetScript>();
+        StartCoroutine( UpdateNumberRenderer() );
+        StartCoroutine( Move() );
+    }
 
     IEnumerator Move() {
         Vector2 pos = transform.position;
@@ -35,5 +44,12 @@ public class EnemyScript : MonoBehaviour {
                 attackTarget = playerVal / attackModifier;
                 break;
         }
+    }
+
+    public IEnumerator UpdateNumberRenderer() {
+        yield return new WaitForEndOfFrame();
+        opNumSet.value = attackModifier;
+        opNumSet.op = attackOperator;
+        opNumSet.UpdateSetRenderer();
     }
 }

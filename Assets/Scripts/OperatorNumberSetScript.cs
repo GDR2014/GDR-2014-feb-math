@@ -1,20 +1,57 @@
 ﻿using Assets.Scripts.Data;
 using UnityEngine;
 
-[RequireComponent( typeof( NumberGroupScript ) )]
 public class OperatorNumberSetScript : MonoBehaviour {
 
-    public float OperatorOffset = -1f;
+    public float OperatorOffset = -1.3f;
 
     public int value = 0;
     public Operator op = Operator.PLUS;
+    public OperatorSide operatorSide = OperatorSide.LEFT;
 
-    private NumberGroupScript number;
+    public NumberGroupScript numberGroupPrefab;
+    private NumberGroupScript numberScript;
+
+    public ChangableSpriteScript operatorPrefab;
+    private ChangableSpriteScript operatorScript;
 
     private void Start() {
-        number = GetComponent<NumberGroupScript>();
+        numberScript = numberGroupPrefab.Spawn();
+        numberScript.transform.parent = transform;
+        numberScript.yOffset = 0;
+        numberScript.transform.localPosition = new Vector3();
 
+        operatorScript = operatorPrefab.Spawn();
+        operatorScript.transform.parent = transform;
+        float posX = 0;
+        switch( operatorSide ) {
+            case OperatorSide.LEFT:
+                posX = OperatorOffset;
+                break;
+            case OperatorSide.RIGHT:
+                posX = CalculateOperatorOffsetRight();
+                break;
+        }
+        operatorScript.transform.localPosition = new Vector2(posX, 0);
+        UpdateSetRenderer();
     }
 
     private void Update() {}
+
+    public enum OperatorSide {
+        LEFT, RIGHT
+    }
+
+    float CalculateOperatorOffsetRight() {
+        int numberLength = numberScript.value.ToString().Length;
+        return numberLength * numberScript.numberSpacing;
+    }
+
+    public void UpdateSetRenderer() {
+        operatorScript.spriteIndex = (int) op;
+        operatorScript.UpdateSprite();
+
+        numberScript.value = value;
+        numberScript.UpdateValue();
+    }
 }

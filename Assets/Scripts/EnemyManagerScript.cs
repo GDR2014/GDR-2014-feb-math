@@ -26,6 +26,7 @@ public class EnemyManagerScript : MonoBehaviour {
     }
 
     IEnumerator SpawnRoutine( EnemySpawnerScript spawner ) {
+        if( spawner == null ) yield break;
         float min = spawner.SpawnInterval.Min;
         float max = spawner.SpawnInterval.Max;
         float delay = Random.Range( min, max ) / 1000;

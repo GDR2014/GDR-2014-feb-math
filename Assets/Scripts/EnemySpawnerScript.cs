@@ -34,9 +34,9 @@ public class EnemySpawnerScript : MonoBehaviour {
             case Operator.MINUS:
             case Operator.MULTIPLY:
             case Operator.DIVIDE:
-                return 1;
+                return 66;
         }
-        return 1;
+        return 33;
     }
 
     Operator SelectRandomOperator() {

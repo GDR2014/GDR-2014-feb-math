@@ -14,10 +14,11 @@ public class EnemySpawnerScript : MonoBehaviour {
     public float EnemySpeed;
     public IntervalBoundsInMillis SpawnInterval;
     public OperatorNumberSetScript.OperatorSide operatorSide = OperatorNumberSetScript.OperatorSide.LEFT;
+    protected Queue<EnemyScript> enemies;
 
     #endregion
     #region Unity methods
-    private void Start() {}
+    private void Start() { enemies = new Queue<EnemyScript>();}
     private void Update() {}
     #endregion
     public EnemyScript SpawnEnemy() {

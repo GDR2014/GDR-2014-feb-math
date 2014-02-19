@@ -30,6 +30,7 @@ public class EnemyScript : MonoBehaviour {
         while ( distance > AttackRange ) {
             pos.x += Speed * Time.deltaTime;
             transform.position = pos;
+            distance = Mathf.Abs( pos.x - playerX );
             yield return null;
         }
     }

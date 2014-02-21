@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -34,35 +35,26 @@ public class PlayerScript : MonoBehaviour {
         }
     }
 
-    // Enemy to the immediate left
-    private EnemyScript _left;
-    public EnemyScript leftEnemy {
-        get { return _left; }
-        set {
-            _left = value;
-            UpdateImmediateEnemies();
-        }
-    }
+    // Enemies to the left
+    public Queue<EnemyScript> leftEnemies;
 
-    // Enemy to the immediate right
-    private EnemyScript _right;
-    public EnemyScript rightEnemy {
-        get { return _left; }
-        set {
-            _right = value;
-            UpdateImmediateEnemies();
-        }
-    }
+    // Enemies to the right
+    public Queue<EnemyScript> rightEnemies;
 
     # endregion
 
     void Start() {
         numberRenderer = GetComponent<NumberGroupScript>();
         attackNumber = (int) ( Random.value * 8 ) + 2;
+        rightEnemies = new Queue<EnemyScript>();
+        leftEnemies = new Queue<EnemyScript>();
     }
 
     public bool AttemptAttack(int newNum) {
+        EnemyScript leftEnemy = leftEnemies.Peek();
+        EnemyScript rightEnemy = rightEnemies.Peek();
         // TODO: ¤¤¤¤¤¤¤¤
+        // Only set attackNumber if attack was successful
         attackNumber = newNum;
         // TODO: ########
         EnemyScript enemy = null;

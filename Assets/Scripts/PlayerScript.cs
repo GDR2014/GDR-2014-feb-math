@@ -15,7 +15,6 @@ public class PlayerScript : MonoBehaviour {
         get { return _attackString; }
         set {
             _attackString = value;
-            UpdateImmediateEnemies();
             UpdateNumberRenderer();
         }
     }
@@ -30,7 +29,6 @@ public class PlayerScript : MonoBehaviour {
         }
         set {
             attackString = value.ToString();
-            UpdateImmediateEnemies();
             UpdateNumberRenderer();
         }
     }
@@ -51,19 +49,22 @@ public class PlayerScript : MonoBehaviour {
     }
 
     public bool AttemptAttack(int newNum) {
-        EnemyScript leftEnemy = leftEnemies.Peek();
-        EnemyScript rightEnemy = rightEnemies.Peek();
-        // TODO: ¤¤¤¤¤¤¤¤
-        // Only set attackNumber if attack was successful
-        attackNumber = newNum;
-        // TODO: ########
+        EnemyScript leftEnemy = null;
+        EnemyScript rightEnemy = null;
+        if ( leftEnemies.Count > 0 ) leftEnemy = leftEnemies.Peek();
+        if ( rightEnemies.Count > 0 ) rightEnemy = rightEnemies.Peek();
+        if( leftEnemy != null ) leftEnemy.UpdateAttackTarget( attackNumber );
+        if ( rightEnemy != null ) rightEnemy.UpdateAttackTarget( attackNumber );
+
         EnemyScript enemy = null;
-        if( leftEnemy != null && leftEnemy.attackTarget == newNum ) enemy = leftEnemy;
-        else if( rightEnemy != null && rightEnemy.attackTarget == newNum ) enemy = rightEnemy;
+        if( leftEnemy != null && leftEnemy.attackTarget == newNum ) enemy = leftEnemies.Dequeue();
+        else if( rightEnemy != null && rightEnemy.attackTarget == newNum ) enemy = rightEnemies.Dequeue();
+        #region debug
         // TODO: ¤¤¤¤¤¤¤¤
         string enemyString = enemy == null ? "null" : enemy == rightEnemy ? "right enemy" : enemy == leftEnemy ? "left enemy" : "weird";
         Debug.Log("Attempting attack. Number is " + newNum + ". Target is " + enemyString);
         // TODO: ########
+        #endregion
         if( enemy == null ) {
             Fumble();
             return false;
@@ -83,11 +84,6 @@ public class PlayerScript : MonoBehaviour {
 
         attackNumber = enemy.attackTarget;
         enemy.Recycle();
-    }
-
-    private void UpdateImmediateEnemies() {
-        if( _left != null ) _left.UpdateAttackTarget( attackNumber );
-        if ( _right != null ) _right.UpdateAttackTarget( attackNumber );
     }
 
     void UpdateNumberRenderer() {

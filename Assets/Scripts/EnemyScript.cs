@@ -24,15 +24,27 @@ public class EnemyScript : MonoBehaviour {
     }
 
     IEnumerator Move() {
-        float playerX = player.transform.position.x;
-        Vector2 pos = transform.position;
-        float distance = Mathf.Abs( pos.x - playerX );
-        while ( distance > AttackRange ) {
+        while ( distanceToPlayer() > AttackRange ) {
+            Vector2 pos = transform.position;
             pos.x += Speed * Time.deltaTime;
             transform.position = pos;
-            distance = Mathf.Abs( pos.x - playerX );
             yield return null;
         }
+        StartCoroutine( Attack() );
+    }
+
+    IEnumerator Attack() {
+        while ( distanceToPlayer() <= AttackRange ) {
+            // TODO: Attack! Rawr!
+            yield return null;
+        }
+        StartCoroutine( Move() );
+    }
+
+    float distanceToPlayer() {
+        float playerX = player.transform.position.x;
+        Vector2 pos = transform.position;
+        return Mathf.Abs( pos.x - playerX );
     }
 
     public void UpdateAttackTarget( int playerVal ) {

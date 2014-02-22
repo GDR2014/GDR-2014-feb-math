@@ -1,16 +1,22 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class InputScript : MonoBehaviour {
     private string input = "";
     public PlayerScript playerScript;
     public bool clearOnFailedAttack = false;
-    
-    #region Unity methods
-    private void Start() {}
 
-    private void Update() {}
-    #endregion
+    public const float nativeWidth = 800, nativeHeight = 450;
+
+    void Awake() {
+        StartCoroutine( waitToClear() );
+    }
+
+    IEnumerator waitToClear() {
+        yield return new WaitForEndOfFrame();
+        ClearInput();
+    }
 
     private bool checkInput( out int parsed ) {
         bool canParse = Int32.TryParse( input, out parsed );
@@ -30,7 +36,7 @@ public class InputScript : MonoBehaviour {
         ClearInput();
     }
 
-    void ClearInput() {
+    public void ClearInput() {
         input = "";
     }
 
@@ -39,6 +45,11 @@ public class InputScript : MonoBehaviour {
     public Rect inputPosition;
     private bool inputHasFired = false;
     private void OnGUI() {
+        float relativeWidth = Screen.width / nativeWidth;
+        float relativeHeight = Screen.height / nativeHeight;
+        GUI.matrix = Matrix4x4.TRS( Vector3.zero, Quaternion.identity, new Vector3( relativeWidth, relativeHeight, 1.0f ) );
+
+
         GUIStyle centerTextStyle = new GUIStyle( GUI.skin.textField ) {alignment = TextAnchor.MiddleCenter};
         GUI.SetNextControlName("textField");
         input = GUI.TextField( inputPosition, input, centerTextStyle );

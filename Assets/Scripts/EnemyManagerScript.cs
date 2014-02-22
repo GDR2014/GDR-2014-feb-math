@@ -8,11 +8,13 @@ public class EnemyManagerScript : MonoBehaviour {
     public int maxEnemies = 10;
     public EnemySpawnerScript leftSpawner, rightSpawner;
 
-    private List<EnemyScript> enemies;
     public PlayerScript player;
 
+    public int EnemyCount {
+        get { return player.leftEnemies.Count + player.rightEnemies.Count; }
+    }
+
     void Start() {
-        enemies = new List<EnemyScript>(maxEnemies);
         StartCoroutine( SpawnRoutine( leftSpawner ) );
         StartCoroutine( SpawnRoutine( rightSpawner ) );
     }
@@ -23,10 +25,8 @@ public class EnemyManagerScript : MonoBehaviour {
 
     void AddEnemy( EnemySpawnerScript spawner ) {
         EnemyScript enemy = spawner.SpawnEnemy();
-        if( spawner == leftSpawner ) {
-            player.leftEnemies.Enqueue( enemy );
-        }
-        enemies.Add(enemy);
+        Queue<EnemyScript> queue = spawner == leftSpawner ? player.leftEnemies : player.rightEnemies;
+        queue.Enqueue( enemy );
     }
 
     IEnumerator SpawnRoutine( EnemySpawnerScript spawner ) {
@@ -35,7 +35,7 @@ public class EnemyManagerScript : MonoBehaviour {
         float max = spawner.SpawnInterval.Max;
         float delay = Random.Range( min, max ) / 1000;
         yield return new WaitForSeconds( delay );
-        if( enemies.Count < maxEnemies ) AddEnemy(spawner);
+        if( EnemyCount < maxEnemies ) AddEnemy(spawner);
         StartCoroutine( SpawnRoutine( spawner ) );
     }
 

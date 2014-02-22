@@ -51,12 +51,13 @@ public class PlayerScript : MonoBehaviour {
     public bool AttemptAttack(int newNum) {
         EnemyScript leftEnemy = null;
         EnemyScript rightEnemy = null;
-        if ( leftEnemies.Count > 0 ) leftEnemy = leftEnemies.Peek();
+        if ( leftEnemies.Count  > 0 ) leftEnemy  = leftEnemies.Peek();
         if ( rightEnemies.Count > 0 ) rightEnemy = rightEnemies.Peek();
-        if( leftEnemy != null ) leftEnemy.UpdateAttackTarget( attackNumber );
+        if ( leftEnemy  != null ) leftEnemy.UpdateAttackTarget(  attackNumber );
         if ( rightEnemy != null ) rightEnemy.UpdateAttackTarget( attackNumber );
 
         EnemyScript enemy = null;
+        Debug.Log(rightEnemy);
         if( leftEnemy != null && leftEnemy.attackTarget == newNum ) enemy = leftEnemies.Dequeue();
         else if( rightEnemy != null && rightEnemy.attackTarget == newNum ) enemy = rightEnemies.Dequeue();
         #region debug

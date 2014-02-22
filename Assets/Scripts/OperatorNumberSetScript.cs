@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Data;
+﻿using System.Collections;
+using Assets.Scripts.Data;
 using UnityEngine;
 
 public class OperatorNumberSetScript : MonoBehaviour {
@@ -23,6 +24,12 @@ public class OperatorNumberSetScript : MonoBehaviour {
 
         operatorScript = operatorPrefab.Spawn();
         operatorScript.transform.parent = transform;
+        StartCoroutine( SetOperatorPosition() );
+        UpdateSetRenderer();
+    }
+
+    protected IEnumerator SetOperatorPosition() {
+        yield return new WaitForEndOfFrame();
         float posX = 0;
         switch( operatorSide ) {
             case OperatorSide.LEFT:
@@ -32,14 +39,7 @@ public class OperatorNumberSetScript : MonoBehaviour {
                 posX = CalculateOperatorOffsetRight();
                 break;
         }
-        operatorScript.transform.localPosition = new Vector2(posX, 0);
-        UpdateSetRenderer();
-    }
-
-    private void Update() {}
-
-    public enum OperatorSide {
-        LEFT, RIGHT
+        operatorScript.transform.localPosition = new Vector2( posX, 0 );
     }
 
     float CalculateOperatorOffsetRight() {
@@ -53,5 +53,9 @@ public class OperatorNumberSetScript : MonoBehaviour {
 
         numberScript.value = value;
         numberScript.UpdateValue();
+    }
+
+    public enum OperatorSide {
+        LEFT, RIGHT
     }
 }

@@ -37,11 +37,18 @@ public class EnemySpawnerScript : MonoBehaviour {
         switch( op ) {
             case Operator.PLUS:
             case Operator.MINUS:
-            case Operator.MULTIPLY:
-            case Operator.DIVIDE:
                 return Random.Range(1, 10);
+            case Operator.MULTIPLY:
+                return Random.Range( 2, 5 );
+            case Operator.DIVIDE:
+                return FindNiceDivisionNumber();
         }
         return 1337;
+    }
+
+    int FindNiceDivisionNumber() {
+        // Put awesome math code here! :D
+        return 1;
     }
 
     Operator SelectRandomOperator() {

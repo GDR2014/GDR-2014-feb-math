@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -7,6 +8,11 @@ using Random = UnityEngine.Random;
 public class PlayerScript : MonoBehaviour {
 
     private NumberGroupScript numberRenderer;
+    public AudioClip AttackClip;
+    public AudioClip FumbleClip;
+    public AudioClip ScoreClip;
+    public AudioClip HurtClip;
+    public AudioClip DeathClip;
 
     # region Properties
     // Player's own number as string
@@ -75,21 +81,36 @@ public class PlayerScript : MonoBehaviour {
     }
 
     void Fumble() {
+        PlayClip( FumbleClip );
         Debug.Log("Fumble!");
     }
 
     void Attack( EnemyScript enemy ) {
-        Vector2 pos = transform.position;
-        pos.x = enemy.transform.position.x;
-        transform.position = pos;
-
-        attackNumber = enemy.attackTarget;
-        enemy.Recycle();
+        StartCoroutine(ChargeTowardsAndDestroy( enemy ));
     }
+
+    public float ATTACK_THRESHOLD = .02f;
+    public float ATTACK_SPEED = .2f;
+    IEnumerator ChargeTowardsAndDestroy( EnemyScript enemy ) {
+        PlayClip(AttackClip);
+        Vector2 pos = transform.position;
+        while ( Mathf.Abs( pos.x - enemy.transform.position.x ) > ATTACK_THRESHOLD ) {
+            // TODO: Use tweening to give the animation some personality
+            pos.x = Mathf.MoveTowards( pos.x, enemy.transform.position.x, ATTACK_SPEED );
+            transform.position = pos;
+            yield return null;
+        }
+        attackNumber = enemy.attackTarget;
+        PlayClip(ScoreClip);
+        enemy.Recycle();
+    } 
 
     void UpdateNumberRenderer() {
         numberRenderer.value = attackNumber;
         numberRenderer.UpdateValue();
     }
 
+    void PlayClip( AudioClip clip ) {
+        AudioSource.PlayClipAtPoint(clip, transform.position);
+    }
 }

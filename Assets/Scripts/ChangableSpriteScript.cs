@@ -15,5 +15,6 @@ public class ChangableSpriteScript : MonoBehaviour {
 
     public void UpdateSprite() {
         renderer.sprite = sprites[spriteIndex];
+        //transform.localScale = new Vector3(1,1,1);
     }
 }

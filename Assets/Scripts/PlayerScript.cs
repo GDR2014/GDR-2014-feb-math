@@ -14,6 +14,8 @@ public class PlayerScript : MonoBehaviour {
     public AudioClip HurtClip;
     public AudioClip DeathClip;
 
+    public ScoreManagerScript scoreManager;
+
     # region Properties
     // Player's own number as string
     private string _attackString = "";
@@ -102,6 +104,7 @@ public class PlayerScript : MonoBehaviour {
         }
         attackNumber = enemy.attackTarget;
         PlayClip(ScoreClip);
+        scoreManager.Score++;
         enemy.Recycle();
     } 
 

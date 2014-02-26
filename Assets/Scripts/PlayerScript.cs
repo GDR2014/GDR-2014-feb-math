@@ -15,6 +15,7 @@ public class PlayerScript : MonoBehaviour {
     public AudioClip DeathClip;
 
     public ScoreManagerScript scoreManager;
+    public EnemyManagerScript enemyManager;
 
     # region Properties
     // Player's own number as string
@@ -41,33 +42,29 @@ public class PlayerScript : MonoBehaviour {
         }
     }
 
-    // Enemies to the left
-    public Queue<EnemyScript> leftEnemies;
-
-    // Enemies to the right
-    public Queue<EnemyScript> rightEnemies;
-
     # endregion
 
     void Start() {
         numberRenderer = GetComponent<NumberGroupScript>();
         attackNumber = (int) ( Random.value * 8 ) + 2;
-        rightEnemies = new Queue<EnemyScript>();
-        leftEnemies = new Queue<EnemyScript>();
     }
 
     public bool AttemptAttack(int newNum) {
-        EnemyScript leftEnemy = null;
-        EnemyScript rightEnemy = null;
-        if ( leftEnemies.Count  > 0 ) leftEnemy  = leftEnemies.Peek();
-        if ( rightEnemies.Count > 0 ) rightEnemy = rightEnemies.Peek();
+        EnemyScript leftEnemy = enemyManager.nearestLeftEnemy;
+        EnemyScript rightEnemy = enemyManager.nearestRightEnemy;
         if ( leftEnemy  != null ) leftEnemy.UpdateAttackTarget(  attackNumber );
         if ( rightEnemy != null ) rightEnemy.UpdateAttackTarget( attackNumber );
 
         EnemyScript enemy = null;
         Debug.Log(rightEnemy);
-        if( leftEnemy != null && leftEnemy.attackTarget == newNum ) enemy = leftEnemies.Dequeue();
-        else if( rightEnemy != null && rightEnemy.attackTarget == newNum ) enemy = rightEnemies.Dequeue();
+        if( leftEnemy != null && leftEnemy.attackTarget == newNum ) {
+            enemy = leftEnemy;
+            enemyManager.leftEnemies.Remove( enemy );
+        }
+        else if( rightEnemy != null && rightEnemy.attackTarget == newNum ) {
+            enemy = rightEnemy;
+            enemyManager.rightEnemies.Remove( enemy );   
+        }
         #region debug
         // TODO: ¤¤¤¤¤¤¤¤
         string enemyString = enemy == null ? "null" : enemy == rightEnemy ? "right enemy" : enemy == leftEnemy ? "left enemy" : "weird";
@@ -103,6 +100,7 @@ public class PlayerScript : MonoBehaviour {
             yield return null;
         }
         attackNumber = enemy.attackTarget;
+        enemyManager.RemoveEnemy(enemy);
         PlayClip(ScoreClip);
         scoreManager.Score++;
         enemy.Recycle();

@@ -87,12 +87,9 @@ public class EnemyManagerScript : MonoBehaviour {
 
     protected IEnumerator enableFrontEffects( EnemyScript enemy ) {
         yield return new WaitForEndOfFrame();
-        Debug.Log("Attempting to enable FrontFX. Enemy is " + enemy);
         if( enemy == null ) yield break;
         SpriteRenderer[] renderers = enemy.GetComponentsInChildren<SpriteRenderer>();
-        Debug.Log("Number of children found in " + enemy + ": " + enemy.GetComponentsInChildren<Transform>().Length);
         foreach( SpriteRenderer renderer in renderers ) {
-            Debug.Log("Coloring renderer for " + renderer.gameObject);
             renderer.sortingLayerID = FRONT;
             renderer.color = FRONT_COLOR;
         }

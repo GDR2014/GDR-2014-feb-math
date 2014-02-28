@@ -14,6 +14,8 @@ public class PlayerScript : MonoBehaviour {
     public AudioClip HurtClip;
     public AudioClip DeathClip;
 
+    public int Health = 5;
+
     public ScoreManagerScript scoreManager;
     public EnemyManagerScript enemyManager;
 
@@ -77,6 +79,11 @@ public class PlayerScript : MonoBehaviour {
         }
         Attack(enemy);
         return true;
+    }
+
+    public void Hurt() {
+        Health--;
+        PlayClip( HurtClip );
     }
 
     void Fumble() {

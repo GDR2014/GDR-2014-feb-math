@@ -34,11 +34,28 @@ public class EnemyScript : MonoBehaviour {
     }
 
     IEnumerator Attack() {
-        while ( distanceToPlayer() <= AttackRange ) {
-            // TODO: Attack! Rawr!
-            yield return null;
+        yield return new WaitForSeconds( .2f );
+        if ( distanceToPlayer() <= AttackRange ) {
+            StartCoroutine( ColorBlink( Color.yellow ) );
+            player.Hurt();
+            yield return new WaitForSeconds( 1 );
         }
         StartCoroutine( Move() );
+    }
+
+    IEnumerator ColorBlink( Color color ) {
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>();
+        Color[] rendererColors = new Color[renderers.Length];
+        for( int i = 0; i < renderers.Length; i++ ) {
+            SpriteRenderer r = renderers[i];
+            rendererColors[i] = r.color;
+            r.color = color;
+        }
+        yield return new WaitForSeconds( .07f );
+        for ( int i = 0; i < renderers.Length; i++ ) {
+            SpriteRenderer r = renderers[i];
+            r.color = rendererColors[i];
+        }
     }
 
     float distanceToPlayer() {
